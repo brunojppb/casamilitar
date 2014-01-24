@@ -19,7 +19,7 @@ def guarnicao_criar(request):
     if request.method == 'POST':
         nome = request.POST.get('nome', '')
         missao = request.POST.get('missao', '')
-        #militares = request.POST.getlist('militares[]')
+        militares = request.POST.getlist('militares[]')
         if nome != '' and missao != '':
             guarnicao = Guarnicao()
             guarnicao.nome = nome
@@ -29,8 +29,7 @@ def guarnicao_criar(request):
                 militar = Militar.objects.get(id=ident)
                 militar.guarnicao = guarnicao
                 militar.save()
-            return HttpResponseRedirect('/escalas/guarnicao/listar')
-
+            return HttpResponseRedirect('/escalas/guarnicao/listar/')
         else:
             error = True
             return render(request, 'guarnicao/guarnicao_form.html', {'error': error})

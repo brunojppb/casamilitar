@@ -36,7 +36,7 @@
                         <th>Posto/Grad</th>
                         <th>Nome</th>
                         <th>Matricula</th>
-                        <th>Adicionar</th>
+                        <th>Remover</th>
                     </tr>
                 </thead>
                 <tbody id="componentes">
@@ -91,8 +91,11 @@
                 },
             })
             .done(function(json) {
-                console.log(json);
+                var addImg = $("<img/>").attr("src", "{{ STATIC_URL }}img/add.png");
+                var removerImg = $("<img/>").attr("src", "{{ STATIC_URL }}img/trash.png");
                 $.each(json, function(index, militar) {
+                    var addImg = $("<img/>").attr("src", "{{ STATIC_URL }}img/add.png");
+                    var removerImg = $("<img/>").attr("src", "{{ STATIC_URL }}img/trash.png");
                     var componentes = $("#componentes");
                     var tr = $("<tr/>");
                     var td = $("<td/>").text(militar.posto);
@@ -102,7 +105,7 @@
                     var td = $("<td/>").text(militar.matricula);
                     tr.append(td);
                     var link = $("<a/>");
-                    var td = $("<td/>");
+                    var td = $("<td/>").attr("style", "text-align: center");
                     td.append(link);
                     tr.append(td);
                     link.click(function(event) {
@@ -113,7 +116,10 @@
                             clonado.addClass('militar' + militar.id);
                             var removeLink = clonado.children("td").children("a");
                             componentes.append(clonado);
-                            removeLink.text("Remover").click(function(event) {
+                            //remove o icone de Add que veio no clone
+                            removeLink.children("img").remove();
+                            removeLink.append(removerImg);
+                            removeLink.click(function(event) {
                                 event.preventDefault();
                                 if(jQuery.inArray(militar.id, idMilitares) != -1){
                                     var indice = jQuery.inArray(militar.id, idMilitares);
@@ -129,7 +135,7 @@
                         else{
                             alert( militar.posto + " " + militar.nome_de_guerra + " Já Adicionado!");
                         }
-                    }).text("Adicionar");
+                    }).append(addImg);
                     $("#resultado tbody").append(tr);
                 });
             })
@@ -140,21 +146,32 @@
                 console.log("complete");
             });
         });
+    //SUBMETENDO FORMULARIO E SALVANDO A GUARNICAO
+    $("#salvar").click(function(event) {
+        //evita que o botao execute a acao padrao
+        $(this).attr("disabled", true);
+        event.preventDefault();
+        $.ajax({
+            url: '/escalas/guarnicao/criar/',
+            type: 'POST',
+            data: {
+            nome: $("#inputNome").val(),
+            missao: $("#inputMissao").val(),
+            militares: idMilitares,
+            //token passado para o django
+            csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value
+            },
+        })
+        .done(function() {
+            console.log("success");
+        })
+        .fail(function() {
+            console.log("error");
+        })
+        .always(function() {
+            console.log("complete");
+        });
     });
+});
 </script>
 {% endblock content %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
