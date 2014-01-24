@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste JSON</title>
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/cupertino/jquery-ui-1.10.4.custom.min.css">
+    <script src="{{ STATIC_URL }}js/bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery-2.0.3.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#button").button().click(function(event) {
+                $.getJSON('/escalas/militar/ajax/', {
+                        q: $("#query").val(),
+                        format: "json"
+                    },
+                    function(json, textStatus) {
+                        console.log("respondeu");
+                        console.log(json);
+                        JSON.stringify(json);
+
+                        $.each(json, function(index, valor) {
+                            $.each(valor, function(chave, val) {
+                                $("#resposta").html("<p>chave: " + chave.nome + "</p>");
+                            });
+                        });
+                    }
+                );
+            });
+        })
+    </script>
+</head>
+<body>
+    <div>
+        <input type="text" id="query" />
+        <a href="#" id="button">Botao</a>
+    </div>
+
+    <div id="resposta"></div>
+</body>
+</html>
